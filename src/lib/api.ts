@@ -13,6 +13,16 @@ export const api = ky.create({
         statusCodes: [408, 502, 503, 504],
     },
     hooks: {
+        beforeRequest: [
+            (request) => {
+                if (typeof window !== 'undefined') {
+                    const token = localStorage.getItem('token')
+                    if (token) {
+                        request.headers.set('Authorization', `Bearer ${token}`)
+                    }
+                }
+            },
+        ],
         afterResponse: [
             async ({ response }) => {
                 if (response.status === 401 && typeof window !== 'undefined') {
