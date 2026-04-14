@@ -46,7 +46,11 @@ export default function RegisterPage() {
         try {
             const res = await api.post('auth/register', { json: form }).json<AuthResponse>()
             setAuth(res.data.token, res.data.user)
-            router.push('/dashboard')
+            router.push(
+                res.data.user.onboardingStatus === 'COMPLETED'
+                    ? '/dashboard'
+                    : '/onboarding'
+            )
         } catch (err) {
             setError(await getErrorMessage(err))
         } finally {

@@ -3,14 +3,14 @@ export interface User {
     email: string
     fullName: string | null
     businessName: string | null
-    onBoardingStatus: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED'
+    onboardingStatus: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED'
 }
 
 export interface AuthResponse {
     success: boolean
     data: {
         token: string
-        user: string
+        user: User
     }
 }
 
