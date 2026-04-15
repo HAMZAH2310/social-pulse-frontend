@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useState } from "react"
+import { useCallback, useState, useEffect } from "react"
 import { useDropzone } from "react-dropzone"
 import { Upload, X, FileVideo, ImageIcon } from 'lucide-react'
 import { cn } from "@/lib/utils"
@@ -12,7 +12,7 @@ interface MediaUploadProps {
 
 const MAX_SIZE = 100 * 1024 * 1024
 const ACCEPTED = {
-    'image/jepg': ['.jpg', '.jpeg'],
+    'image/jpeg': ['.jpg', '.jpeg'],
     'image/png': ['.png'],
     'image/webp': ['.webp'],
     'video/mp4': ['.mp4'],
@@ -22,6 +22,12 @@ const ACCEPTED = {
 export default function MediaUpload({ onFileChange, error }: MediaUploadProps) {
     const [preview, setPreview] = useState<string | null>(null)
     const [fileInfo, setFileInfo] = useState<{ name: string; type: string; size: string } | null>(null)
+
+    useEffect(() => {
+        return () => {
+            if (preview) URL.revokeObjectURL(preview)
+        }
+    }, [preview])
 
     const onDrop = useCallback((acceptedFiles: File[], rejectedFiles: any[]) => {
         if (rejectedFiles.length > 0) {
@@ -64,6 +70,7 @@ export default function MediaUpload({ onFileChange, error }: MediaUploadProps) {
 
     const handleRemove = (e: React.MouseEvent) => {
         e.stopPropagation()
+        if (preview) URL.revokeObjectURL(preview)
         setPreview(null)
         setFileInfo(null)
         onFileChange(null)

@@ -92,7 +92,6 @@ export default function LoginPage() {
                         <div className="space-y-2">
                             <div className="flex justify-between items-center">
                                 <Label htmlFor="password" className="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">Your Password</Label>
-                                <span className="text-xs text-primary/50 font-bold">Forgot?</span>
                             </div>
                             <Input
                                 id="password"

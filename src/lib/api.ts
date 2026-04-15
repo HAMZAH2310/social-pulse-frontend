@@ -1,5 +1,6 @@
 // src/lib/api.ts
 import ky, { HTTPError } from 'ky'
+import { useAuthStore } from '@/src/stores/auth.store'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
 
@@ -16,8 +17,7 @@ export const api = ky.create({
         afterResponse: [
             async (request, options, response) => {
                 if (response.status === 401 && typeof window !== 'undefined') {
-                    localStorage.removeItem('token');
-                    document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
+                    useAuthStore.getState().logout();
                     
                     if (window.location.pathname !== '/login') {
                         window.location.href = '/login'

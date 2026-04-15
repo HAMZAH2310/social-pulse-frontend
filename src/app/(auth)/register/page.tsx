@@ -41,6 +41,15 @@ export default function RegisterPage() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setError('')
+
+        // E.164 Validation: +[country code][number] or [local number starting with 0]
+        const waRegex = /^(\+?\d{1,4})?\d{7,15}$/
+        if (!waRegex.test(form.whatsappNumber)) {
+            setError('Nomor WhatsApp tidak valid. Masukkan format +62... atau 08...')
+            setLoading(false)
+            return
+        }
+
         setLoading(true)
 
         try {

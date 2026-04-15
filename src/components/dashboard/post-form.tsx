@@ -1,7 +1,7 @@
 // src/components/dashboard/post-form.tsx
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { api, getErrorMessage } from '../../lib/api'
 import { Post } from '../../types/posts'
@@ -24,7 +24,7 @@ export default function PostForm() {
     const [error, setError] = useState('')
     const [fieldErrors, setFieldErrors] = useState<{ file?: string; caption?: string }>({})
     const [loading, setLoading] = useState(false)
-    const [success, setSuccess] = useState(false)
+    const [success, setSuccess] = useState<'scheduled' | 'created' | false>(false)
 
     const validate = (): boolean => {
         const errors: { file?: string; caption?: string } = {}
@@ -44,7 +44,6 @@ export default function PostForm() {
         setLoading(true)
 
         try {
-            // Pakai FormData karena ada file upload
             const formData = new FormData()
             formData.append('file', file!)
             formData.append('caption', caption)
@@ -52,22 +51,28 @@ export default function PostForm() {
 
             await api.post('posts', { body: formData }).json<{ success: boolean; data: Post }>()
 
-            setSuccess(true)
+            // Capture the state before reset
+            const wasScheduled = !!scheduledAt
+            setSuccess(wasScheduled ? 'scheduled' : 'created')
 
             // Reset form
             setFile(null)
             setCaption('')
             setScheduledAt(undefined)
             setFieldErrors({})
-
-            // Redirect ke list post setelah 1.5 detik
-            setTimeout(() => router.push('/dashboard/posts'), 1500)
         } catch (err) {
             setError(await getErrorMessage(err))
         } finally {
             setLoading(false)
         }
     }
+
+    useEffect(() => {
+        if (success) {
+            const timer = setTimeout(() => router.push('/dashboard/posts'), 1500)
+            return () => clearTimeout(timer)
+        }
+    }, [success, router])
 
     return (
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -81,7 +86,7 @@ export default function PostForm() {
             {success && (
                 <Alert className="bg-green-500/10 border-green-500/20">
                     <AlertDescription className="text-green-400">
-                        ✓ Post berhasil {scheduledAt ? 'dijadwalkan' : 'dibuat'}! Mengalihkan...
+                        ✓ Post berhasil {success === 'scheduled' ? 'dijadwalkan' : 'dibuat'}! Mengalihkan...
                     </AlertDescription>
                 </Alert>
             )}

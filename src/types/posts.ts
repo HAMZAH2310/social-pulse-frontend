@@ -17,4 +17,5 @@ export interface Post {
 export interface CreatePostPayload {
     caption: string
     scheduledAt?: string
+    file: File | Blob
 }

@@ -1,5 +1,3 @@
-'use client'
-
 import Link from 'next/link'
 import { Zap, ArrowRight, Shield, Globe, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'

@@ -3,7 +3,6 @@
 import PostForm from '@/src/components/dashboard/post-form'
 import { ArrowLeft, Sparkles, Send } from 'lucide-react'
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
 
 export default function CreatePostPage() {
     return (

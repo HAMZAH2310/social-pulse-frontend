@@ -5,17 +5,13 @@ import { Bell, Search } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 
-const statusMap = {
-    PENDING: { label: 'Menunggu Setup', className: 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20' },
-    IN_PROGRESS: { label: 'Sedang Disetup', className: 'bg-blue-500/10 text-blue-500 border-blue-500/20' },
-    COMPLETED: { label: 'Aktif', className: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' },
-}
+import { ONBOARDING_STATUS_MAP } from '@/src/lib/constants'
 
 export default function Navbar() {
     const { user } = useAuthStore()
     const status = user?.onboardingStatus
-        ? statusMap[user.onboardingStatus]
-        : statusMap.PENDING
+        ? ONBOARDING_STATUS_MAP[user.onboardingStatus]
+        : ONBOARDING_STATUS_MAP.PENDING
 
     return (
         <header className="fixed top-0 left-64 right-0 h-16 glass border-b border-border/50 flex items-center justify-between px-8 z-30">
@@ -35,12 +31,12 @@ export default function Navbar() {
             {/* Kanan */}
             <div className="flex items-center gap-4">
                 {/* Status badge */}
-                <span className={cn(
-                    "text-[11px] px-3 py-1 rounded-full border font-semibold tracking-wide",
+                <Badge variant="outline" className={cn(
+                    "text-[11px] px-3 py-1 rounded-full border font-semibold tracking-wide shadow-none",
                     status.className
                 )}>
                     {status.label}
-                </span>
+                </Badge>
 
                 <div className="h-4 w-[1px] bg-border mx-1" />
 

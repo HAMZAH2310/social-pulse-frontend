@@ -1,13 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const PUBLIC_ROUTES = ['/login', '/register'];
 const AUTH_ROUTES = ['/login', '/register'];
 
 export function middleware(request: NextRequest) {
     const token = request.cookies.get('token')?.value;
     const { pathname } = request.nextUrl;
 
-    if (!token && !PUBLIC_ROUTES.includes(pathname)) {
+    if (!token && !AUTH_ROUTES.includes(pathname)) {
         const url = request.nextUrl.clone()
         url.pathname = '/login'
         url.searchParams.set('redirect', pathname)

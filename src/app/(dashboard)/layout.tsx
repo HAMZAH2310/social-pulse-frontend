@@ -32,7 +32,7 @@ export default function DashboardLayout({
         if (user?.onboardingStatus !== 'COMPLETED' && pathname !== '/onboarding') {
             router.push('/onboarding')
         }
-    }, [mounted, _hasHydrated, isAuthenticated, user, pathname])
+    }, [mounted, _hasHydrated, isAuthenticated, user, pathname, router])
 
     if (!mounted || !_hasHydrated || !isAuthenticated) return null
 

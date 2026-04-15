@@ -25,18 +25,21 @@ export default function SchedulePicker({ value, onChange }: SchedulePickerProps)
 
     const handleDateSelect = (date: Date | undefined) => {
         if (!date) return
+        
+        const newDate = new Date(date)
         // Pertahankan time jika sudah ada, default 09:00
         const current = value ? new Date(value) : null
         const hours = current ? current.getHours() : 9
         const minutes = current ? current.getMinutes() : 0
-        date.setHours(hours, minutes, 0, 0)
-        onChange(date.toISOString())
+        newDate.setHours(hours, minutes, 0, 0)
+        onChange(newDate.toISOString())
         setOpen(false)
     }
 
     const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!selectedDate) return
         const [hours, minutes] = e.target.value.split(':').map(Number)
-        const date = selectedDate ? new Date(selectedDate) : new Date()
+        const date = new Date(selectedDate)
         date.setHours(hours, minutes, 0, 0)
         onChange(date.toISOString())
     }
@@ -71,7 +74,11 @@ export default function SchedulePicker({ value, onChange }: SchedulePickerProps)
                             mode="single"
                             selected={selectedDate}
                             onSelect={handleDateSelect}
-                            disabled={(date) => date < new Date()}
+                            disabled={(date) => {
+                                const today = new Date()
+                                today.setHours(0, 0, 0, 0)
+                                return date < today
+                            }}
                             className="p-3"
                         />
                     </PopoverContent>

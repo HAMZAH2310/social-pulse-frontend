@@ -12,16 +12,33 @@ interface StatsCardProps {
     className?: string
 }
 
+const TREND_CONFIG = {
+    up: {
+        className: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20',
+        symbol: '↑'
+    },
+    down: {
+        className: 'bg-red-500/10 text-red-500 border-red-500/20',
+        symbol: '↓'
+    },
+    neutral: {
+        className: 'bg-muted/50 text-muted-foreground border-border',
+        symbol: '•'
+    }
+}
+
 export default function StatsCard({
     title,
     value,
     description,
     icon: Icon,
-    trend,
+    trend = 'neutral',
     trendValue,
     iconColor = 'text-primary',
     className,
 }: StatsCardProps) {
+    const trendStyle = TREND_CONFIG[trend] || TREND_CONFIG.neutral
+
     return (
         <div className={cn(
             "glass-card rounded-2xl p-6 space-y-4 hover:border-white/10 transition-all duration-300 group shadow-lg",
@@ -47,11 +64,9 @@ export default function StatsCard({
             {trendValue && (
                 <div className={cn(
                     'flex items-center gap-1.5 px-3 py-1 rounded-full w-fit text-[10px] font-bold uppercase tracking-wider border',
-                    trend === 'up' ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' :
-                        trend === 'down' ? 'bg-red-500/10 text-red-500 border-red-500/20' :
-                            'bg-muted/50 text-muted-foreground border-border'
+                    trendStyle.className
                 )}>
-                    {trend === 'up' ? '↑' : trend === 'down' ? '↓' : '•'} {trendValue}
+                    {trendStyle.symbol} {trendValue}
                 </div>
             )}
         </div>

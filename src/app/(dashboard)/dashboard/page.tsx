@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useAuthStore } from '@/src/stores/auth.store'
 import { api } from '@/src/lib/api'
+import { Post } from '@/src/types/posts'
 import StatsCard from '@/src/components/dashboard/stats-card'
 import {
     FileText,
@@ -34,7 +35,7 @@ export default function DashboardPage() {
     useEffect(() => {
         const fetchStats = async () => {
             try {
-                const posts = await api.get('posts').json<{ success: boolean; data: any[] }>()
+                const posts = await api.get('posts').json<{ success: boolean; data: Post[] }>()
 
                 const now = new Date()
                 const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)

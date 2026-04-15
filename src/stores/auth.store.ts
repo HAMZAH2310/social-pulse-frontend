@@ -27,12 +27,17 @@ export const useAuthStore = create<AuthState>()(
 
             logout: () => {
                 set({ token: null, user: null, isAuthenticated: false })
+                if (typeof window !== 'undefined') {
+                    document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
+                }
             },
         }),
         {
             name: 'auth-storage',
-            onRehydrateStorage: (state) => {
-                return () => state.setHasHydrated(true)
+            onRehydrateStorage: () => (state, error) => {
+                if (!error && state) {
+                    state.setHasHydrated(true)
+                }
             },
             partialize: (state) => ({
                 user: state.user,

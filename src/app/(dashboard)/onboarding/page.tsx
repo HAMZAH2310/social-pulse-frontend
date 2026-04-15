@@ -1,9 +1,11 @@
 'use client'
 
 import { useAuthStore } from '@/src/stores/auth.store'
+import { ONBOARDING_STATUS_MAP } from '@/src/lib/constants'
 import { useRouter } from 'next/navigation'
 import { Clock, MessageCircle, CheckCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
 const steps = [
     { label: 'Daftar akun', done: true },
@@ -16,8 +18,9 @@ export default function OnboardingPage() {
     const { user, logout } = useAuthStore()
     const router = useRouter()
 
+    const adminPhone = process.env.NEXT_PUBLIC_ADMIN_WHATSAPP || ''
     const message = `Halo admin SocialPulse, saya ${user?.fullName} (${user?.email}) sudah mendaftar dan menunggu proses setup.`
-    const waLink = `https://wa.me/?text=${encodeURIComponent(message)}`
+    const waLink = adminPhone ? `https://wa.me/${adminPhone}?text=${encodeURIComponent(message)}` : null
 
     return (
         <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-background">
@@ -67,25 +70,32 @@ export default function OnboardingPage() {
                     </div>
                     <div className="flex justify-between items-center">
                         <span className="text-muted-foreground">WhatsApp</span>
-                        <span className="text-foreground font-semibold">{user?.whatsappNumber}</span>
+                        <span className="text-foreground font-semibold">{user?.whatsappNumber || 'Not provided'}</span>
                     </div>
                     <div className="flex justify-between items-center">
                         <span className="text-muted-foreground">Status</span>
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-yellow-500/10 text-yellow-500 border border-yellow-500/20">
-                            {user?.onboardingStatus === 'IN_PROGRESS' ? 'Sedang Diproses' : 'Menunggu Setup'}
-                        </span>
+                        {user?.onboardingStatus && (
+                            <span className={cn(
+                                "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold border",
+                                ONBOARDING_STATUS_MAP[user.onboardingStatus].className
+                            )}>
+                                {ONBOARDING_STATUS_MAP[user.onboardingStatus].label}
+                            </span>
+                        )}
                     </div>
                 </div>
 
                 {/* CTA */}
                 <div className="space-y-4 pt-2">
-                    <Button
-                        className="w-full h-12 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold shadow-lg shadow-emerald-600/20 transition-all active:scale-[0.98]"
-                        onClick={() => window.open(waLink, '_blank', 'noopener,noreferrer')}
-                    >
-                        <MessageCircle className="w-5 h-5 mr-2 fill-white/20" />
-                        Chat Admin Sekarang
-                    </Button>
+                    {waLink && (
+                        <Button
+                            className="w-full h-12 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold shadow-lg shadow-emerald-600/20 transition-all active:scale-[0.98]"
+                            onClick={() => window.open(waLink, '_blank', 'noopener,noreferrer')}
+                        >
+                            <MessageCircle className="w-5 h-5 mr-2 fill-white/20" />
+                            Chat Admin Sekarang
+                        </Button>
+                    )}
                     <Button
                         variant="ghost"
                         className="w-full h-11 text-muted-foreground hover:text-destructive hover:bg-destructive/5 font-medium transition-colors"
