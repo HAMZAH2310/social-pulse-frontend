@@ -3,6 +3,7 @@ export interface User {
     email: string
     fullName: string | null
     businessName: string | null
+    whatsappNumber: string
     onboardingStatus: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED'
 }
 

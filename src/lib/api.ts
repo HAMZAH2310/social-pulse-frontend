@@ -1,5 +1,6 @@
 // src/lib/api.ts
 import ky, { HTTPError } from 'ky'
+import { useAuthStore } from '@/src/stores/auth.store'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
 
@@ -14,11 +15,10 @@ export const api = ky.create({
     },
     hooks: {
         afterResponse: [
-            async ({ response }) => {
+            async (request, options, response) => {
                 if (response.status === 401 && typeof window !== 'undefined') {
-                    // Logic to clear ephemeral store state is usually handled by the component catching the error
-                    // or we can use the store directly here if needed.
-                    // For now, we remove the localStorage calls as requested.
+                    useAuthStore.getState().logout();
+                    
                     if (window.location.pathname !== '/login') {
                         window.location.href = '/login'
                     }
