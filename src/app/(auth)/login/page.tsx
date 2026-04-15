@@ -11,9 +11,11 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Zap, ShieldCheck } from 'lucide-react'
+import { useSearchParams } from 'next/navigation'
 
 export default function LoginPage() {
     const router = useRouter()
+    const searchParams = useSearchParams()
     const { setAuth } = useAuthStore()
 
     const [form, setForm] = useState<LoginPayload>({ email: '', password: '' })
@@ -33,7 +35,10 @@ export default function LoginPage() {
             const res = await api.post('auth/login', { json: form }).json<AuthResponse>()
             setAuth(res.data.token, res.data.user)
 
-            if (res.data.user.onboardingStatus === 'COMPLETED') {
+            const redirect = searchParams.get('redirect')
+            if (redirect && redirect.startsWith('/')) {
+                router.push(redirect)
+            } else if (res.data.user.onboardingStatus === 'COMPLETED') {
                 router.push('/dashboard')
             } else {
                 router.push('/onboarding')
@@ -87,7 +92,7 @@ export default function LoginPage() {
                         <div className="space-y-2">
                             <div className="flex justify-between items-center">
                                 <Label htmlFor="password" className="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">Your Password</Label>
-                                <Link href="#" className="text-xs text-primary hover:text-primary/80 font-bold transition-colors">Forgot?</Link>
+                                <span className="text-xs text-primary/50 font-bold">Forgot?</span>
                             </div>
                             <Input
                                 id="password"

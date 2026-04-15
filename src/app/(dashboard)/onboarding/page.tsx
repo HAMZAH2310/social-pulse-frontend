@@ -16,7 +16,8 @@ export default function OnboardingPage() {
     const { user, logout } = useAuthStore()
     const router = useRouter()
 
-    const waLink = `https://wa.me/?text=Halo admin SocialPulse, saya ${user?.fullName} (${user?.email}) sudah mendaftar dan menunggu proses setup.`
+    const message = `Halo admin SocialPulse, saya ${user?.fullName} (${user?.email}) sudah mendaftar dan menunggu proses setup.`
+    const waLink = `https://wa.me/?text=${encodeURIComponent(message)}`
 
     return (
         <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-background">
@@ -80,7 +81,7 @@ export default function OnboardingPage() {
                 <div className="space-y-4 pt-2">
                     <Button
                         className="w-full h-12 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold shadow-lg shadow-emerald-600/20 transition-all active:scale-[0.98]"
-                        onClick={() => window.open(waLink, '_blank')}
+                        onClick={() => window.open(waLink, '_blank', 'noopener,noreferrer')}
                     >
                         <MessageCircle className="w-5 h-5 mr-2 fill-white/20" />
                         Chat Admin Sekarang

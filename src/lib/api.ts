@@ -13,22 +13,12 @@ export const api = ky.create({
         statusCodes: [408, 502, 503, 504],
     },
     hooks: {
-        beforeRequest: [
-            (request) => {
-                if (typeof window !== 'undefined') {
-                    const token = localStorage.getItem('token')
-                    if (token) {
-                        request.headers.set('Authorization', `Bearer ${token}`)
-                    }
-                }
-            },
-        ],
         afterResponse: [
-            async ({ response }) => {
+            async (request, options, response) => {
                 if (response.status === 401 && typeof window !== 'undefined') {
-                    // Logic to clear ephemeral store state is usually handled by the component catching the error
-                    // or we can use the store directly here if needed.
-                    // For now, we remove the localStorage calls as requested.
+                    localStorage.removeItem('token');
+                    document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
+                    
                     if (window.location.pathname !== '/login') {
                         window.location.href = '/login'
                     }

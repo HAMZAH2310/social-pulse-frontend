@@ -45,13 +45,13 @@ export default function Navbar() {
                 <div className="h-4 w-[1px] bg-border mx-1" />
 
                 {/* Search / Actions */}
-                <button className="w-9 h-9 rounded-full bg-secondary/50 border border-border/50 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-secondary transition-all">
+                <button aria-label="Search" className="w-9 h-9 rounded-full bg-secondary/50 border border-border/50 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-secondary transition-all">
                     <Search className="w-4 h-4" />
                 </button>
 
-                <button className="w-9 h-9 rounded-full bg-secondary/50 border border-border/50 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-secondary transition-all relative">
+                <button aria-label="Notifications" className="w-9 h-9 rounded-full bg-secondary/50 border border-border/50 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-secondary transition-all relative">
                     <Bell className="w-4 h-4" />
-                    <span className="absolute top-2.5 right-2.5 w-1.5 h-1.5 bg-primary rounded-full" />
+                    <span aria-hidden="true" className="absolute top-2.5 right-2.5 w-1.5 h-1.5 bg-primary rounded-full" />
                 </button>
 
                 {/* Avatar */}

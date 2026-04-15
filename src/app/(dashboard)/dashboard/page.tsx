@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 import { useAuthStore } from '@/src/stores/auth.store'
 import { api } from '@/src/lib/api'
 import StatsCard from '@/src/components/dashboard/stats-card'
@@ -69,12 +70,14 @@ export default function DashboardPage() {
                     </p>
                 </div>
                 <div className="flex items-center gap-3">
-                    <Button variant="outline" className="h-10 rounded-xl px-4 font-semibold border-white/5 hover:bg-muted/50">
+                    <Button variant="outline" className="h-10 rounded-xl px-4 font-semibold border-white/5 hover:bg-muted/50" disabled aria-label="Ekspor Laporan (Segera Hadir)">
                         Ekspor Laporan
                     </Button>
-                    <Button className="h-10 rounded-xl px-4 font-bold shadow-lg shadow-primary/20">
-                        Buat Post Baru <ArrowUpRight className="ml-2 w-4 h-4" />
-                    </Button>
+                    <Link href="/dashboard/create">
+                        <Button className="h-10 rounded-xl px-4 font-bold shadow-lg shadow-primary/20 bg-primary hover:bg-primary/90 text-primary-foreground">
+                            Buat Post Baru <ArrowUpRight className="ml-2 w-4 h-4" />
+                        </Button>
+                    </Link>
                 </div>
             </div>
 
@@ -125,8 +128,8 @@ export default function DashboardPage() {
                                 description="Penggunaan kuota bulanan"
                                 icon={TrendingUp}
                                 iconColor="text-blue-500"
-                                trend={stats && stats.thisMonth >= 8 ? 'down' : 'up'}
-                                trendValue={stats ? `${10 - stats.thisMonth} kuota sisa` : ''}
+                                trend={stats && stats.thisMonth >= 10 ? 'down' : 'up'}
+                                trendValue={stats ? (stats.thisMonth >= 10 ? 'Kuota habis' : `${10 - stats.thisMonth} kuota sisa`) : ''}
                             />
                             <StatsCard
                                 title="Terjadwal"

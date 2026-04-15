@@ -6,17 +6,10 @@ interface AuthState {
     token: string | null
     user: User | null
     isAuthenticated: boolean
+    _hasHydrated: boolean
+    setHasHydrated: (state: boolean) => void
     setAuth: (token: string, user: User) => void
     logout: () => void
-}
-
-const setCookie = (name: string, value: string, days = 7) => {
-    const expires = new Date(Date.now() + days * 86400000).toUTCString()
-    document.cookie = `${name}=${value}; expires=${expires}; path=/; SameSite=Strict`
-}
-
-const deleteCookie = (name: string) => {
-    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -25,25 +18,26 @@ export const useAuthStore = create<AuthState>()(
             token: null,
             user: null,
             isAuthenticated: false,
+            _hasHydrated: false,
+            setHasHydrated: (state) => set({ _hasHydrated: state }),
 
             setAuth: (token, user) => {
-                localStorage.setItem('token', token)
-                setCookie('token', token)
                 set({ token, user, isAuthenticated: true })
             },
 
             logout: () => {
-                localStorage.removeItem('token')
-                deleteCookie('token')
                 set({ token: null, user: null, isAuthenticated: false })
             },
         }),
         {
             name: 'auth-storage',
+            onRehydrateStorage: (state) => {
+                return () => state.setHasHydrated(true)
+            },
             partialize: (state) => ({
-                token: state.token,
                 user: state.user,
                 isAuthenticated: state.isAuthenticated,
+                // token removed from persistence for security
             }),
         }
     )

@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { useAuthStore } from '@/src/stores/auth.store'
 import Sidebar from '@/src/components/dashboard/sidebar'
 import Navbar from '@/src/components/dashboard/navbar'
@@ -11,8 +11,9 @@ export default function DashboardLayout({
 }: {
     children: React.ReactNode
 }) {
-    const { isAuthenticated, user } = useAuthStore()
+    const { isAuthenticated, user, _hasHydrated } = useAuthStore()
     const router = useRouter()
+    const pathname = usePathname()
     const [mounted, setMounted] = useState(false)
 
     useEffect(() => {
@@ -20,19 +21,20 @@ export default function DashboardLayout({
     }, [])
 
     useEffect(() => {
-        if (!mounted) return
+        if (!mounted || !_hasHydrated) return
 
         if (!isAuthenticated) {
             router.push('/login')
             return
         }
+        
         // User yang belum selesai setup diarahkan ke onboarding
-        if (user?.onboardingStatus !== 'COMPLETED') {
+        if (user?.onboardingStatus !== 'COMPLETED' && pathname !== '/onboarding') {
             router.push('/onboarding')
         }
-    }, [mounted, isAuthenticated, user])
+    }, [mounted, _hasHydrated, isAuthenticated, user, pathname])
 
-    if (!mounted || !isAuthenticated) return null
+    if (!mounted || !_hasHydrated || !isAuthenticated) return null
 
     return (
         <div className="min-h-screen">
